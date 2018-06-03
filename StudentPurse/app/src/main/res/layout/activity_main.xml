@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id = "@+id/drawer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    tools:context=".MainActivity">
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/first">
+
+        <ImageView
+            android:id="@+id/mn"
+            android:layout_width="wrap_content"
+            android:layout_height="390dp"
+            android:src="@drawable/main" />
+
+        <ImageButton
+            android:id="@+id/plus"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="350dp"
+            android:layout_weight="1"
+            android:background="@null"
+            app:srcCompat="@drawable/plus" />
+
+        <ImageButton
+            android:id="@+id/minus"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="200dp"
+            android:layout_marginTop="350dp"
+            android:layout_weight="1"
+            android:background="@null"
+            app:srcCompat="@drawable/minus" />
+
+        <Button
+            android:id="@+id/main"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="130dp"
+            android:layout_marginTop="200dp"
+            android:background="@null"
+            android:text="0.00"
+            android:textSize="40sp" />
+    </FrameLayout>
+
+    <android.support.design.widget.NavigationView
+        app:headerLayout="@layout/header"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        app:itemIconTint="@color/galaxy"
+        app:itemTextColor="@color/black"
+        android:id="@+id/nv"
+        app:menu="@menu/drawernavigation"
+        android:background="@color/white"
+        android:layout_gravity="start" >
+
+    </android.support.design.widget.NavigationView>
+</android.support.v4.widget.DrawerLayout>

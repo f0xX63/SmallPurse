@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/hm" android:title="Home"/>
+    <item android:id="@+id/st" android:title="Statistic"/>
+    <item android:id="@+id/cl" android:title="Calandary"/>
+    <item android:id="@+id/mp" android:title="Maps"/>
+    <item android:id="@+id/sett" android:title="Settings"/>
+</menu>
