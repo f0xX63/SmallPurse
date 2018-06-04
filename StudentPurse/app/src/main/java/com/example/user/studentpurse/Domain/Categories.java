@@ -1,15 +1,9 @@
 package com.example.user.studentpurse.Domain;
 
 
-import android.os.Environment;
-
 import java.io.Serializable;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 
 public class Categories implements Serializable{
-    public static String fileName = Environment.getExternalStorageDirectory() + "/Categories.txt";
-
     public int Id;
     public String Name;
     public String[] SubCategories;

@@ -86,6 +86,17 @@ public class BalanceService implements IBalanceService {
     public String toString(Balance balance) {
         return balance.Balance + " руб";
     }
+
+    @Override
+    public Balance getCommonBalance() throws IOException {
+        SmallPurseParameters parameters = JSONHelper.importFromJSON(Context);
+        Balance[] balances = parameters.balances;
+        Balance result = new Balance(0, "Общие");
+        for (int i = 0; i < balances.length ; i++) {
+            result.Balance+=balances[i].Balance;
+        }
+        return result;
+    }
 }
 
 

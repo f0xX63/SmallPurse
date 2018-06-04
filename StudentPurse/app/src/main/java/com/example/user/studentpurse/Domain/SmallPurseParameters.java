@@ -1,6 +1,7 @@
 package com.example.user.studentpurse.Domain;
 
 public class SmallPurseParameters {
+    public Boolean FirstLaunch = true;
     public Balance[] balances;
     public Categories[] categories;
     public Spending[] spendings;

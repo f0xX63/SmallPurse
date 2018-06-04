@@ -1,112 +1,102 @@
 package com.example.user.studentpurse;
 
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.format.DateFormat;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
-import java.time.Year;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
+import com.example.user.studentpurse.Domain.Categories;
+import com.example.user.studentpurse.Domain.SmallPurseParameters;
+import com.example.user.studentpurse.Domain.Spending;
+import com.example.user.studentpurse.Services.BalanceService;
+import com.example.user.studentpurse.Services.CategoriesService;
+import com.example.user.studentpurse.Services.IBalanceService;
+import com.example.user.studentpurse.Services.ICategoryService;
+import com.example.user.studentpurse.Services.ISpendingService;
+import com.example.user.studentpurse.Services.SpendingService;
+import com.example.user.studentpurse.WorkOfFile.JSONHelper;
 
-public class Minus extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+public class Minus extends AppCompatActivity{
     Spinner Moneys;
-    Spinner Date;
+    EditText Date;
     Spinner Category;
     Spinner Place;
     EditText input;
-    ImageButton AddMatch;
     ImageButton AddCategory;
     ImageButton AddSubCategory;
     Button ok;
-    Button dm;
     EditText etText;
     SharedPreferences sPref;
+
     int day, month, year, hour, minute;
     int dayFinal, monthFinal, yearFinal, hourFinal, minuteFinal;
     final String SAVED_TEXT = "saved_text";
+
     final List<String> DateList = new ArrayList<String>();
+
+    ISpendingService spendingService;
+    ICategoryService categoryService;
+    IBalanceService balanceService;
+    String inputName;
+
+    List<String> storages = new ArrayList<String>();
+    List<String> CategoryList = new ArrayList<String>();
+    List<String> categories = new ArrayList<String>();
+    List<String> subCategories = new ArrayList<String>();
+
+
+
 
     SmallPurseParameters parameters;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_minus);
+
+        categoryService = new CategoriesService(Minus.this);
+        balanceService = new BalanceService(Minus.this);
+        spendingService = new SpendingService(Minus.this);
+
         try {
             parameters = JSONHelper.importFromJSON(Minus.this);
+            storages = balanceService.getAllStorage();
+            categories = categoryService.getAllCategotiesString();
+            subCategories = new ArrayList<>(Arrays.asList(parameters.categories[0].SubCategories));
         } catch (IOException e) {
-            Toast.makeText(Minus.this, e.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(Minus.this, e.getMessage(), Toast.LENGTH_LONG);
         }
 
-        dm = (Button) findViewById(R.id.dm);
-        ok = (Button) findViewById(R.id.okm);
-        etText = (EditText)findViewById(R.id.tv4);
-        Moneys = (Spinner)findViewById(R.id.moneys);
-        Date = (Spinner)findViewById(R.id.date);
-        Category = (Spinner) findViewById(R.id.category);
-        Place = (Spinner)findViewById(R.id.place);
-        AddCategory = (ImageButton)findViewById(R.id.addCategory);
-        AddSubCategory = (ImageButton) findViewById(R.id.addSubCategory);
+        InitializeComponents();
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(Minus.this);
-        builder.setTitle("Добавление");
-        builder.setMessage("Введите название");
-        input = new EditText(Minus.this);
-        builder.setView(input);
-        builder.setPositiveButton("Принять", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(Minus.this, input.getText().toString(), Toast.LENGTH_LONG);
-            }
-        });
-        builder.setNegativeButton("Отменить", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        final AlertDialog ad = builder.create();
+        final ArrayAdapter<String> StorageAdapter = getAdapterInstance(storages);
+        ArrayAdapter<String> CategoryAdapter = getAdapterInstance(categories);
+        ArrayAdapter<String> SubCategoryAdapter = getAdapterInstance(subCategories);
 
-        AddCategory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ad.show();
-            }
-        });
-
-        AddSubCategory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ad.show();
-            }
-        });
-
-        final List<String> simpleList = new ArrayList<String>();
-        simpleList.add("Карта");
-        simpleList.add("Наличка");
-        simpleList.add("Подушка");
-        simpleList.add("Добавить");
-        ArrayAdapter<String> MoneysAdapter = new ArrayAdapter<>(Minus.this,R.layout.support_simple_spinner_dropdown_item,simpleList);
-        Moneys.setAdapter(MoneysAdapter);
+        Moneys.setAdapter(StorageAdapter);
+        Category.setAdapter(CategoryAdapter);
+        Place.setAdapter(SubCategoryAdapter);
 
         Moneys.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(Minus.this, simpleList.get(position), Toast.LENGTH_SHORT).show();
+
             }
 
             @Override
@@ -114,52 +104,15 @@ public class Minus extends AppCompatActivity implements DatePickerDialog.OnDateS
 
             }
         });
-
-        final List<String> DateList = new ArrayList<String>();
-
-        Calendar c = Calendar.getInstance();
-        final String sDate = c.get(Calendar.YEAR) + "-" + c.get(Calendar.MONTH) + "-" + c.get(Calendar.DAY_OF_MONTH) + " at " + c.get(Calendar.HOUR_OF_DAY) + ":" + c.get(Calendar.MINUTE);
-        DateList.add(sDate);
-
-        ArrayAdapter<String> DateAdapter = new ArrayAdapter<>(Minus.this,R.layout.support_simple_spinner_dropdown_item,DateList);
-        Date.setAdapter(DateAdapter);
-
-        Date.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(Minus.this, DateList.get(position), Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        List<String> categories = new ArrayList<String>();
-        if(parameters!=null) {
-            for (Categories category : parameters.categories) {
-                categories.add(category.Name);
-            }
-        }
-        final List<String> CategoryList = categories;
-
-        ArrayAdapter<String> CategoryAdapter = new ArrayAdapter<>(Minus.this,R.layout.support_simple_spinner_dropdown_item,CategoryList);
-        Category.setAdapter(CategoryAdapter);
-        final List<String> subCategories = new ArrayList<String>();
 
         Category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(Minus.this, CategoryList.get(position), Toast.LENGTH_SHORT).show();
-                for (Categories category: parameters.categories) {
-                    if(category.Name == CategoryList.get(position)){
-                        subCategories.clear();
-                        for (String subCategory: category.SubCategories) {
-                            subCategories.add(subCategory);
-                        }
-                        break;
-                    }
+                try {
+                    List<String> newSubCategory = new ArrayList<String>(Arrays.asList(categoryService.getCategoryByName(categoryService.getAllCategoties().get(position).Name).SubCategories));
+                    Place.setAdapter(getAdapterInstance(newSubCategory));
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
 
@@ -169,16 +122,10 @@ public class Minus extends AppCompatActivity implements DatePickerDialog.OnDateS
             }
         });
 
-
-        final List<String> PlaceList = subCategories;
-
-        ArrayAdapter<String> PlaceAdapter = new ArrayAdapter<>(Minus.this,R.layout.support_simple_spinner_dropdown_item,PlaceList);
-        Place.setAdapter(PlaceAdapter);
-
         Place.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(Minus.this, PlaceList.get(position), Toast.LENGTH_SHORT).show();
+
             }
 
             @Override
@@ -186,63 +133,138 @@ public class Minus extends AppCompatActivity implements DatePickerDialog.OnDateS
 
             }
         });
+
+        AddCategory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final AlertDialog ad = getModalInstanse("Добавление новой категории", "Название категории:").create();
+                ad.show();
+                ad.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        Categories categories = new Categories(parameters.categories.length, inputName, new String[]{});
+                        try {
+                            categoryService.addCategory(categories);
+                            Category.setAdapter(getAdapterInstance(categoryService.getAllCategotiesString()));
+                            Place.setAdapter(getAdapterInstance(new ArrayList<String>()));
+                        } catch (IOException e) {
+                            Toast.makeText(Minus.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+            }
+        });
+
+        AddSubCategory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final AlertDialog ad = getModalInstanse("Добавление нового места", "Название места:").create();
+                ad.show();
+                ad.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        try {
+                            SmallPurseParameters parameters = JSONHelper.importFromJSON(Minus.this);
+                            List<String> newSubCategories = new ArrayList<>();
+                            for (int i = 0; i < parameters.categories.length; i++) {
+                                if(parameters.categories[i].Name.equals(Category.getSelectedItem())){
+                                    newSubCategories = new ArrayList<>(Arrays.asList(parameters.categories[i].SubCategories));
+                                    newSubCategories.add(inputName);
+                                    parameters.categories[i].SubCategories = new String[newSubCategories.size()];
+                                    parameters.categories[i].SubCategories = newSubCategories.toArray(parameters.categories[i].SubCategories);
+                                }
+                            }
+                            JSONHelper.exportToJSON(Minus.this, parameters);
+                            Place.setAdapter(getAdapterInstance(newSubCategories));
+                        } catch (IOException e) {
+                            Toast.makeText(Minus.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+            }
+        });
+
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                saveText();
-                startActivity(intent);
+                int index = 0;
+                try {
+                    index = spendingService.getLastId();
+                } catch (IOException e) {
+                   Toast.makeText(Minus.this, e.getMessage(),Toast.LENGTH_LONG).show();
+                }
+                if (etText.getText().toString().isEmpty() || etText.getText() == null)
+                {
+                    Toast.makeText(Minus.this, "Не все поля заполнены",Toast.LENGTH_LONG).show();
+                    return;
+                }
+                try{
+                    Double.parseDouble(etText.getText().toString());
+                }catch (Exception e){
+                    Toast.makeText(Minus.this, "Не верный формат суммы",Toast.LENGTH_LONG).show();
+                    return;
+                }
+                Spending spending = new Spending(index, Category.getSelectedItem().toString(), Place.getSelectedItem().toString(), new Date(), Moneys.getSelectedItem().toString(), Double.parseDouble(etText.getText().toString()));
+                try {
+                    spendingService.addSpending(spending);
+                    balanceService.subBalance(spending);
+                } catch (IOException e) {
+                    Toast.makeText(Minus.this, e.getMessage(),Toast.LENGTH_LONG).show();
+                }
+                try {
+                    Intent intent = new Intent(Minus.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                } catch (Exception ex){
+                    Toast.makeText(Minus.this, "Не все поля заполнены или неверный тип суммы списывания",Toast.LENGTH_LONG).show();
+                }
+
             }
         });
-        dm.setOnClickListener(new View.OnClickListener() {
+
+    }
+
+    private AlertDialog.Builder getModalInstanse(String header, String title){
+        AlertDialog.Builder builder = new AlertDialog.Builder(Minus.this);
+        builder.setTitle(header);
+        builder.setMessage(title);
+        input = new EditText(Minus.this);
+        builder.setView(input);
+        builder.setPositiveButton("Принять", new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Calendar c = Calendar.getInstance();
-                year = c.get(Calendar.YEAR);
-                month = c.get(Calendar.MONTH);
-                day = c.get(Calendar.DAY_OF_MONTH);
-
-                DatePickerDialog datePickerDialog = new DatePickerDialog(Minus.this, Minus.this, year,month,day);
-                datePickerDialog.show();
+            public void onClick(DialogInterface dialog, int which) {
+                inputName = input.getText().toString();
+                dialog.dismiss();
             }
         });
-
+        builder.setNegativeButton("Отменить", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        return builder;
     }
 
-    private void saveText() {
-        sPref = getSharedPreferences("MyPref", MODE_PRIVATE);
-        SharedPreferences.Editor ed = sPref.edit();
-        ed.putString(SAVED_TEXT, etText.getText().toString());
-        ed.commit();
-        Toast.makeText(Minus.this, "Text saved", Toast.LENGTH_SHORT).show();
+    public ArrayAdapter<String> getAdapterInstance(List<String> items){
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(Minus.this,R.layout.support_simple_spinner_dropdown_item, items);
+        return adapter;
     }
 
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        saveText();
-    }
-
-    @Override
-    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        yearFinal = year;
-        monthFinal = month + 1;
-        dayFinal = dayOfMonth;
-
-        Calendar c = Calendar.getInstance();
-        hour = c.get(Calendar.HOUR_OF_DAY);
-        minute = c.get(Calendar.MINUTE);
-
-        TimePickerDialog timePickerDialog = new TimePickerDialog(Minus.this,Minus.this, hour, minute, DateFormat.is24HourFormat(this));
-        timePickerDialog.show();
-    }
-
-    @Override
-    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        hourFinal = hourOfDay;
-        minuteFinal = minute;
-        final String sDate =yearFinal + "-" + monthFinal + "-" + dayFinal + "at" + hourFinal + ":" + minuteFinal;
-        DateList.add(sDate);
+    private void InitializeComponents(){
+        ok = (Button) findViewById(R.id.okm);
+        etText = (EditText)findViewById(R.id.tv4);
+        Moneys = (Spinner)findViewById(R.id.moneys);
+        Date = (EditText)findViewById(R.id.date);
+        SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//dd/MM/yyyy
+        Date now = new Date();
+        String strDate = sdfDate.format(now);
+        Date.setText(strDate);
+        Date.setFocusable(false);
+        Date.setClickable(false);
+        Category = (Spinner) findViewById(R.id.category);
+        Place = (Spinner)findViewById(R.id.place);
+        AddCategory = (ImageButton)findViewById(R.id.addCategory);
+        AddSubCategory = (ImageButton) findViewById(R.id.addSubCategory);
     }
 }

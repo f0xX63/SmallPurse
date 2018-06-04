@@ -19,7 +19,6 @@ public class FirstOpenApp {
     };
     private static Spending[] Spending = new Spending[]{};
     private static Balance[] Balances = new Balance[]{
-            new Balance(0, "Общие"),
             new Balance(100,"Налиичные")
     };
 
@@ -37,7 +36,17 @@ public class FirstOpenApp {
 
 
     public static void FillFiles(Context context) throws Exception {
-        SmallPurseParameters parameters = new SmallPurseParameters(Balances, Categories, Spending);
+        SmallPurseParameters parameters;
+        try {
+            parameters = JSONHelper.importFromJSON(context);
+            if (!parameters.FirstLaunch){
+                parameters = new SmallPurseParameters(Balances, Categories, Spending);
+                parameters.FirstLaunch = false;
+            }
+        } catch (Exception e){
+            parameters = new SmallPurseParameters(Balances, Categories, Spending);
+            parameters.FirstLaunch = false;
+        }
         try {
             JSONHelper.exportToJSON(context, parameters);
         } catch (IOException e) {

@@ -12,7 +12,6 @@ public class Spending implements Serializable{
     public String Categories;
     public String SubCategories;
     public Date Date;
-    public String Description;
     public String Storage;
     public double Value;
 
@@ -21,17 +20,15 @@ public class Spending implements Serializable{
         this.Categories = spending.Categories;
         this.SubCategories = spending.SubCategories;
         this.Date = spending.Date;
-        this.Description = spending.Description;
         this.Storage = spending.Storage;
         this.Value = spending.Value;
     }
 
-    public Spending(int id, String categories, String subCategories, Date date, String description, String storage, double value){
+    public Spending(int id, String categories, String subCategories, Date date, String storage, double value){
         this.Id = id;
         this.Categories = categories;
         this.SubCategories = subCategories;
         this.Date = date;
-        this.Description = description;
         this.Storage = storage;
         this.Value = value;
     }

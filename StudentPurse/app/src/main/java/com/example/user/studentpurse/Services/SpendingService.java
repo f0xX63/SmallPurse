@@ -21,22 +21,23 @@ public class SpendingService implements ISpendingService{
     @Override
     public void addSpending(Spending spending) throws IOException {
         SmallPurseParameters parameters = JSONHelper.importFromJSON(context);
-        List<Spending> spendings = Arrays.asList(parameters.spendings);
+        List<Spending> spendings = new ArrayList<>(Arrays.asList(parameters.spendings));
         spendings.add(spending);
-        parameters.spendings = (Spending[]) spendings.toArray();
+        parameters.spendings = new Spending[spendings.size()];
+        parameters.spendings = spendings.toArray(parameters.spendings);
         JSONHelper.exportToJSON(context, parameters);
     }
 
     @Override
     public void deleteSpending(Spending spending) throws IOException {
-        ArrayList<Spending> spendings = (ArrayList<Spending>) repositorySpending.getAllData();
+        /*ArrayList<Spending> spendings = (ArrayList<Spending>) repositorySpending.getAllData();
         spendings.remove(spending);
-        repositorySpending.saveAllData(spendings);
+        repositorySpending.saveAllData(spendings);*/
     }
 
     @Override
     public int getLastId() throws IOException {
-        ArrayList<Spending> spendings = (ArrayList<Spending>) repositorySpending.getAllData();
-        return spendings.size();
+       SmallPurseParameters parameters = JSONHelper.importFromJSON(context);
+       return parameters.spendings.length;
     }
 }

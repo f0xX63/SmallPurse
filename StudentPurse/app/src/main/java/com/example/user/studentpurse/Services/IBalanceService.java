@@ -13,5 +13,7 @@ public interface IBalanceService {
     Balance getBalance(String storage) throws IOException;
     List<String> getAllStorage() throws IOException;
     String toString(Balance balance);
+    Balance getCommonBalance() throws IOException;
+
 }
 
