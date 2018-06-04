@@ -1,49 +1,54 @@
 package com.example.user.studentpurse;
 
-import android.os.Build;
-import android.os.Bundle;
-import android.support.annotation.RequiresApi;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.example.user.studentpurse.Domain.Categories;
-import com.example.user.studentpurse.Domain.SmallPurseParameters;
-import com.example.user.studentpurse.WorkOfFile.JSONHelper;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class Plus extends AppCompatActivity {
+public class Plus extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener  {
     Spinner Moneys;
     Spinner Date;
-    Spinner Category;
-    Spinner Place;
-    SmallPurseParameters parameters;
-    @RequiresApi(api = Build.VERSION_CODES.N)
+    Button ok;
+    Button dm;
+    EditText etText;
+    int day, month, year, hour, minute;
+    int dayFinal, monthFinal, yearFinal, hourFinal, minuteFinal;
+    final String SAVED_TEXT = "saved_text";
+    SharedPreferences sPref;
+    final List<String> DateList = new ArrayList<String>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_minus);
-        try {
-            parameters = JSONHelper.importFromJSON(Plus.this);
-        } catch (IOException e) {
-            Toast.makeText(Plus.this, e.getMessage(), Toast.LENGTH_LONG).show();
-        }
+        setContentView(R.layout.activity_plus);
+        dm = (Button) findViewById(R.id.dm2);
+        ok = (Button) findViewById(R.id.okp);
         Moneys = (Spinner)findViewById(R.id.moneys);
         Date = (Spinner)findViewById(R.id.date);
-        Category = (Spinner) findViewById(R.id.category);
-        Place = (Spinner)findViewById(R.id.place);
+        etText = (EditText) findViewById(R.id.tv2);
+
         final List<String> simpleList = new ArrayList<String>();
         simpleList.add("Карта");
         simpleList.add("Наличка");
         simpleList.add("Подушка");
         simpleList.add("Добавить");
+
         ArrayAdapter<String> MoneysAdapter = new ArrayAdapter<>(Plus.this,R.layout.support_simple_spinner_dropdown_item,simpleList);
         Moneys.setAdapter(MoneysAdapter);
 
@@ -59,11 +64,11 @@ public class Plus extends AppCompatActivity {
             }
         });
 
-        final List<String> DateList = new ArrayList<String>();
+
+
         Calendar c = Calendar.getInstance();
         final String sDate = c.get(Calendar.YEAR) + "-" + c.get(Calendar.MONTH) + "-" + c.get(Calendar.DAY_OF_MONTH) + " at " + c.get(Calendar.HOUR_OF_DAY) + ":" + c.get(Calendar.MINUTE);
         DateList.add(sDate);
-        DateList.add("Добавить");
 
         ArrayAdapter<String> DateAdapter = new ArrayAdapter<>(Plus.this,R.layout.support_simple_spinner_dropdown_item,DateList);
         Date.setAdapter(DateAdapter);
@@ -79,55 +84,65 @@ public class Plus extends AppCompatActivity {
 
             }
         });
-        List<String> categories = new ArrayList<String>();
-        if(parameters!=null) {
-            for (Categories category : parameters.categories) {
-                categories.add(category.Name);
-            }
-        }
-        final List<String> CategoryList = categories;
 
-        ArrayAdapter<String> CategoryAdapter = new ArrayAdapter<>(Plus.this,R.layout.support_simple_spinner_dropdown_item,CategoryList);
-        Category.setAdapter(CategoryAdapter);
-        final List<String> subCategories = new ArrayList<String>();
-        Category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        dm.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(Plus.this, CategoryList.get(position), Toast.LENGTH_SHORT).show();
-                for (Categories category: parameters.categories) {
-                    if(category.Name == CategoryList.get(position)){
-                        subCategories.clear();
-                        for (String subCategory: category.SubCategories) {
-                            subCategories.add(subCategory);
-                        }
-                        break;
-                    }
-                }
-            }
+            public void onClick(View v) {
+                Calendar c = Calendar.getInstance();
+                year = c.get(Calendar.YEAR);
+                month = c.get(Calendar.MONTH);
+                day = c.get(Calendar.DAY_OF_MONTH);
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
+                DatePickerDialog datePickerDialog = new DatePickerDialog(Plus.this, Plus.this, year,month,day);
+                datePickerDialog.show();
             }
         });
 
-
-
-        final List<String> PlaceList = subCategories;
-
-        ArrayAdapter<String> PlaceAdapter = new ArrayAdapter<>(Plus.this,R.layout.support_simple_spinner_dropdown_item,PlaceList);
-        Place.setAdapter(PlaceAdapter);
-
-        Place.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+       ok.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(Plus.this, PlaceList.get(position), Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                saveText();
+                startActivity(intent);
             }
         });
+    }
+
+    private void saveText() {
+        sPref = getSharedPreferences("MyPref", MODE_PRIVATE);
+        SharedPreferences.Editor ed = sPref.edit();
+        ed.putString(SAVED_TEXT, etText.getText().toString());
+        ed.commit();
+        Toast.makeText(Plus.this, "Text saved", Toast.LENGTH_SHORT).show();
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        saveText();
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        yearFinal = year;
+        monthFinal = month + 1;
+        dayFinal = dayOfMonth;
+
+        Calendar c = Calendar.getInstance();
+        hour = c.get(Calendar.HOUR_OF_DAY);
+        minute = c.get(Calendar.MINUTE);
+
+        TimePickerDialog timePickerDialog = new TimePickerDialog(Plus.this,Plus.this, hour, minute, DateFormat.is24HourFormat(this));
+        timePickerDialog.show();
+
+    }
+
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        hourFinal = hourOfDay;
+        minuteFinal = minute;
+        final String sDate =yearFinal + "-" + monthFinal + "-" + dayFinal + "at" + hourFinal + ":" + minuteFinal;
+        DateList.add(sDate);
     }
 }

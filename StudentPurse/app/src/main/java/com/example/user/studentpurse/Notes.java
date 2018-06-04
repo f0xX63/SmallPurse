@@ -1,22 +1,28 @@
 package com.example.user.studentpurse;
 
 import android.content.Intent;
-import android.os.Bundle;
+import android.content.SharedPreferences;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
-
-import com.example.user.studentpurse.Services.FirstOpenApp;
+import android.widget.LinearLayout;
 
 public class Notes extends AppCompatActivity {
 
     private ViewPager mSlideViewPager;
+    private PrefManager prefManager;
     private SliderAdapter sliderAdapter;
     private Button button;
+    SharedPreferences prefs = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        prefManager = new PrefManager(this);
+        if (!prefManager.isFirstTimeLaunch()) {
+            launchHomeScreen();
+            finish();
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notes);
         button = (Button) findViewById(R.id.button);
@@ -35,5 +41,10 @@ public class Notes extends AppCompatActivity {
         });
         sliderAdapter = new SliderAdapter(this);
         mSlideViewPager.setAdapter(sliderAdapter);
+    }
+    private void launchHomeScreen() {
+        prefManager.setFirstTimeLaunch(false);
+        startActivity(new Intent(Notes.this, SplashScreen.class));
+        finish();
     }
 }
