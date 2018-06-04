@@ -47,7 +47,7 @@
             android:layout_marginTop="200dp"
             android:background="@null"
             android:text="0.00"
-            android:textSize="40sp" />
+            android:textSize="25sp" />
     </FrameLayout>
 
     <android.support.design.widget.NavigationView
