@@ -16,7 +16,6 @@
         android:text="Счет:"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
     <Spinner
         android:id="@+id/moneys"
         android:layout_width="300dp"

@@ -18,11 +18,5 @@ public class Balance implements Serializable{
     {
         this.Balance = balance.Balance;
     }
-    public double getBalance() {
-        return Balance;
-    }
-    public void setBalance(double balance) {
-        Balance = balance;
-    }
 }
 

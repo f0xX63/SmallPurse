@@ -69,6 +69,16 @@
         app:layout_constraintStart_toStartOf="@+id/tv2"
         app:layout_constraintTop_toBottomOf="@+id/tv2" />
 
+    <ImageButton
+        android:id="@+id/addCategory"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/ic_add_black_24dp"
+        android:layout_marginLeft="320dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="@+id/tv2"
+        app:layout_constraintTop_toBottomOf="@+id/tv2"  />
+
     <TextView
         android:id="@+id/tv3"
         android:layout_width="wrap_content"
@@ -87,6 +97,16 @@
         android:layout_marginLeft="20dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="@+id/tv3"
+        app:layout_constraintTop_toBottomOf="@+id/tv3" />
+
+    <ImageButton
+        android:id="@+id/addSubCategory"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/ic_add_black_24dp"
+        android:layout_marginLeft="320dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="@+id/tv3"
         app:layout_constraintTop_toBottomOf="@+id/tv3" />
 

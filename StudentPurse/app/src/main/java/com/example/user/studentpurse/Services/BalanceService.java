@@ -18,48 +18,29 @@ public class BalanceService implements IBalanceService {
 
     @Override
     public void subBalance(Spending spending) throws IOException {
-        try {
             SmallPurseParameters parameters = JSONHelper.importFromJSON(Context);
             parameters.balance.Balance -= spending.Value;
             JSONHelper.exportToJSON(Context, parameters);
-        } catch (IOException e)
-        {
-            throw new IOException(e.getMessage());
-        }
     }
 
     @Override
     public void addBalance(Balance balance) throws IOException {
-        try {
             SmallPurseParameters parameters = JSONHelper.importFromJSON(Context);
             parameters.balance.Balance += balance.Balance;
             JSONHelper.exportToJSON(Context, parameters);
-        } catch (IOException e)
-        {
-            throw new IOException(e.getMessage());
-        }
     }
 
     @Override
     public void setBalance(Balance balance) throws IOException {
-        try {
             SmallPurseParameters parameters = JSONHelper.importFromJSON(Context);
             parameters.balance.Balance = balance.Balance;
             JSONHelper.exportToJSON(Context, parameters);
-        } catch (IOException e)
-        {
-            throw new IOException(e.getMessage());
-        }
     }
 
     @Override
     public Balance getBalance() throws IOException {
-        try {
-            SmallPurseParameters parameters = JSONHelper.importFromJSON(Context);
-            return parameters.balance;
-        } catch (IOException e) {
-            throw new IOException(e.getMessage());
-        }
+        SmallPurseParameters parameters = JSONHelper.importFromJSON(Context);
+        return parameters.balance;
     }
 
     @Override
