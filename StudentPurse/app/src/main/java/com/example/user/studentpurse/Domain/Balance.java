@@ -2,11 +2,9 @@ package com.example.user.studentpurse.Domain;
 
 
 import java.io.Serializable;
-import java.lang.reflect.Type;
 
 public class Balance implements Serializable{
     public double Balance;
-    public static String fileName = "Balance.dat";
 
     public Balance(double balance)
     {

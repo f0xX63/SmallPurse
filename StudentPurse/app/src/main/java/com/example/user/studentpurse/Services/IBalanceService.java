@@ -10,6 +10,6 @@ public interface IBalanceService {
     void addBalance(Balance balance) throws IOException;
     void setBalance(Balance balance) throws IOException;
     Balance getBalance() throws IOException;
-    Boolean checkFileExists();
+    String toString(Balance balance);
 }
 

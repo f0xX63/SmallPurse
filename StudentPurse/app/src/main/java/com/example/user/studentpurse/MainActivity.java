@@ -1,23 +1,26 @@
 package com.example.user.studentpurse;
 
-import android.app.FragmentManager;
 import android.content.Intent;
-import android.net.Network;
-import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.user.studentpurse.Domain.SmallPurseParameters;
+import com.example.user.studentpurse.Services.BalanceService;
+import com.example.user.studentpurse.Services.IBalanceService;
+import com.example.user.studentpurse.WorkOfFile.JSONHelper;
+
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
     ImageButton plus;
     ImageButton minus;
     Button main;
+    SmallPurseParameters parameters;
+    IBalanceService balanceService;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +47,14 @@ public class MainActivity extends AppCompatActivity {
         minus = (ImageButton) findViewById(R.id.minus);
         plus = (ImageButton) findViewById(R.id.plus);
         main = (Button) findViewById(R.id.main);
+        balanceService = new BalanceService(this);
+        try {
+            parameters = JSONHelper.importFromJSON(this);
+            main.setText(balanceService.toString(parameters.balance));
+        } catch (IOException e) {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
         minus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

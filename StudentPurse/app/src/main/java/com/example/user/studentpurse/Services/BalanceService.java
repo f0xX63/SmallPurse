@@ -1,65 +1,70 @@
 package com.example.user.studentpurse.Services;
+
+import android.content.Context;
+
 import com.example.user.studentpurse.Domain.Balance;
+import com.example.user.studentpurse.Domain.SmallPurseParameters;
 import com.example.user.studentpurse.Domain.Spending;
-import com.example.user.studentpurse.WorkOfFile.Repository;
+import com.example.user.studentpurse.WorkOfFile.JSONHelper;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class BalanceService implements IBalanceService {
 
-    Repository<Balance> balanceRepository;
-
-    public BalanceService(Repository balanceRepository) {
-        this.balanceRepository = balanceRepository;
+    Context Context;
+    public BalanceService(Context context) {
+        Context = context;
     }
 
     @Override
     public void subBalance(Spending spending) throws IOException {
-        Balance balance = getBalance();
-        balance.Balance -= spending.Value;
-        ArrayList<Balance> balanceList = new ArrayList<Balance>();
-        balanceList.add(balance);
-            balanceRepository.saveAllData(balanceList);
-
+        try {
+            SmallPurseParameters parameters = JSONHelper.importFromJSON(Context);
+            parameters.balance.Balance -= spending.Value;
+            JSONHelper.exportToJSON(Context, parameters);
+        } catch (IOException e)
+        {
+            throw new IOException(e.getMessage());
+        }
     }
 
     @Override
     public void addBalance(Balance balance) throws IOException {
-        Balance bal = getBalance();
-        bal.Balance += balance.Balance;
-        ArrayList<Balance> balanceList = new ArrayList<Balance>();
-        balanceList.add(bal);
         try {
-            balanceRepository.saveAllData(balanceList);
-        } catch (IOException ex) {
-            throw new IOException("При сохранении возникли ошибки");
+            SmallPurseParameters parameters = JSONHelper.importFromJSON(Context);
+            parameters.balance.Balance += balance.Balance;
+            JSONHelper.exportToJSON(Context, parameters);
+        } catch (IOException e)
+        {
+            throw new IOException(e.getMessage());
         }
     }
 
     @Override
     public void setBalance(Balance balance) throws IOException {
-        ArrayList<Balance> balances = new ArrayList<Balance>();
-        balances.add(balance);
         try {
-            balanceRepository.saveAllData(balances);
-        } catch (IOException ex) {
-            throw new IOException("При сохранении возникли ошибки");
+            SmallPurseParameters parameters = JSONHelper.importFromJSON(Context);
+            parameters.balance.Balance = balance.Balance;
+            JSONHelper.exportToJSON(Context, parameters);
+        } catch (IOException e)
+        {
+            throw new IOException(e.getMessage());
         }
     }
 
     @Override
     public Balance getBalance() throws IOException {
         try {
-            return balanceRepository.getAllData().get(0);
+            SmallPurseParameters parameters = JSONHelper.importFromJSON(Context);
+            return parameters.balance;
         } catch (IOException e) {
-            throw new IOException((e.getMessage()));
+            throw new IOException(e.getMessage());
         }
     }
 
     @Override
-    public Boolean checkFileExists() {
-        return balanceRepository.checkFileExists();
+    public String toString(Balance balance) {
+        return balance.Balance + " руб";
     }
 }
 

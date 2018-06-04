@@ -1,11 +1,12 @@
 package com.example.user.studentpurse.Domain;
 
+import android.os.Environment;
+
 import java.io.Serializable;
-import java.lang.reflect.Type;
 import java.util.Date;
 
 public class Spending implements Serializable{
-    public static String fileName = "Spending.dat";
+    public static String fileName = Environment.getExternalStorageDirectory() + "/Spending.txt";
 
     public int Id;
     public String Categories;
