@@ -15,6 +15,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.user.studentpurse.Domain.Balance;
 import com.example.user.studentpurse.Domain.SmallPurseParameters;
 import com.example.user.studentpurse.Services.BalanceService;
 import com.example.user.studentpurse.Services.IBalanceService;
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     ImageButton minus;
     Button main;
     SmallPurseParameters parameters;
+    Balance balance;
     IBalanceService balanceService;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +52,16 @@ public class MainActivity extends AppCompatActivity {
         balanceService = new BalanceService(this);
         try {
             parameters = JSONHelper.importFromJSON(this);
-            main.setText(balanceService.toString(parameters.balance));
+            for (Balance bal : parameters.balances){
+                if(bal.Storage.equals("Общие")){
+                    balance = bal;
+                    break;
+                }
+            }
+            if (balance != null){
+                main.setText(balanceService.toString(balance));
+            }
+
         } catch (IOException e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
         }

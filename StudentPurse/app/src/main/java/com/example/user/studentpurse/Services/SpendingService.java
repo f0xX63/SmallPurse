@@ -1,26 +1,30 @@
 package com.example.user.studentpurse.Services;
 
+import android.content.Context;
+
+import com.example.user.studentpurse.Domain.SmallPurseParameters;
 import com.example.user.studentpurse.Domain.Spending;
-import com.example.user.studentpurse.WorkOfFile.Repository;
+import com.example.user.studentpurse.WorkOfFile.JSONHelper;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class SpendingService implements ISpendingService{
-    Repository<Spending> repositorySpending;
 
-    public SpendingService(Repository<Spending> repositorySpending)
+    Context context;
+    public SpendingService(Context context)
     {
-        this.repositorySpending = repositorySpending;
+        this.context = context;
     }
     @Override
     public void addSpending(Spending spending) throws IOException {
-
-        try {
-            repositorySpending.add(spending);
-        } catch (IOException e) {
-            throw new IOException(e.getMessage());
-        }
+        SmallPurseParameters parameters = JSONHelper.importFromJSON(context);
+        List<Spending> spendings = Arrays.asList(parameters.spendings);
+        spendings.add(spending);
+        parameters.spendings = (Spending[]) spendings.toArray();
+        JSONHelper.exportToJSON(context, parameters);
     }
 
     @Override
@@ -32,11 +36,7 @@ public class SpendingService implements ISpendingService{
 
     @Override
     public int getLastId() throws IOException {
-        try {
-            ArrayList<Spending> spendings = (ArrayList<Spending>) repositorySpending.getAllData();
-            return spendings.size();
-        } catch (IOException e) {
-           throw new IOException(e.getMessage());
-        }
+        ArrayList<Spending> spendings = (ArrayList<Spending>) repositorySpending.getAllData();
+        return spendings.size();
     }
 }

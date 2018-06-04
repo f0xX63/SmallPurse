@@ -18,7 +18,10 @@ public class FirstOpenApp {
             new Categories(3,"Развлечения", new String[] {"Кино", "Анти-кафе", "боулинг"}),
     };
     private static Spending[] Spending = new Spending[]{};
-    private static Balance Balance = new Balance(0);
+    private static Balance[] Balances = new Balance[]{
+            new Balance(0, "Общие"),
+            new Balance(100,"Налиичные")
+    };
 
     public static Boolean checkExcistsFiles(String[] fileNames)
     {
@@ -32,24 +35,9 @@ public class FirstOpenApp {
         return true;
     }
 
-    /*public static void createFiles(String[] fileNames) throws Exception {
-        Boolean isExcistsFiles = checkExcistsFiles(fileNames);
-        if (!isExcistsFiles) {
-            for (String filename : fileNames) {
-                File file = new File(filename);
-                try {
-                    file.createNewFile();
-                } catch (IOException e) {
-                    throw new Exception("Не удалось создать файлы");
-                }
-            }
-        }
-    }*/
-
-
 
     public static void FillFiles(Context context) throws Exception {
-        SmallPurseParameters parameters = new SmallPurseParameters(Balance, Categories, Spending);
+        SmallPurseParameters parameters = new SmallPurseParameters(Balances, Categories, Spending);
         try {
             JSONHelper.exportToJSON(context, parameters);
         } catch (IOException e) {

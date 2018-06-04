@@ -1,9 +1,8 @@
 package com.example.user.studentpurse;
 
 import android.graphics.Color;
-import android.media.audiofx.AudioEffect;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
@@ -45,7 +44,7 @@ public class StatiscticM extends AppCompatActivity {
 
 
         Description description = new Description();
-        description.setText("Это статистика ваших расходов");
+        description.setText("Cтатистика расходов");
         description.setTextSize(15);
         pieChart.setDescription(description);
 
