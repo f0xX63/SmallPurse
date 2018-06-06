@@ -22,17 +22,16 @@
         android:id="@+id/addStorage"
         android:layout_width="30dp"
         android:layout_height="30dp"
+        android:layout_marginStart="284dp"
+        android:layout_marginTop="24dp"
         android:background="@drawable/ic_add_black_24dp"
-        android:layout_marginLeft="320dp"
-        android:layout_marginTop="25dp"
         app:layout_constraintStart_toStartOf="@+id/sc"
-        app:layout_constraintTop_toBottomOf="@+id/sc"  />
+        app:layout_constraintTop_toBottomOf="@+id/sc" />
 
     <Spinner
         android:id="@+id/scl"
-        android:layout_width="300dp"
-        android:layout_height="30dp"
-        android:layout_marginLeft="8dp"
+        android:layout_width="259dp"
+        android:layout_height="31dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="24dp"
         app:layout_constraintStart_toStartOf="@+id/sc"

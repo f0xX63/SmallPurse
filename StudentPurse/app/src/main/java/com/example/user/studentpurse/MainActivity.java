@@ -96,13 +96,9 @@ public class MainActivity extends AppCompatActivity {
                 fragmentClass = Statistic.class;
                 break;
             case R.id.cl:
+                Intent intt = new Intent(getBaseContext(), History.class);
+                startActivity(intt);
                 fragmentClass = Calandary.class;
-                break;
-            case R.id.sett:
-                fragmentClass = Settings.class;
-                break;
-            case R.id.mp:
-                fragmentClass = Maps.class;
                 break;
             default:
                 fragmentClass = Statistic.class;

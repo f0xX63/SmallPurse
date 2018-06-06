@@ -7,8 +7,23 @@
     tools:context=".StatiscticM">
 
     <com.github.mikephil.charting.charts.PieChart
+        android:id="@+id/piechart"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/piechart">
-    </com.github.mikephil.charting.charts.PieChart>
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="61dp"></com.github.mikephil.charting.charts.PieChart>
+
+    <Button
+        android:id="@+id/bc3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="13dp"
+        android:layout_marginLeft="11dp"
+        android:layout_marginStart="11dp"
+        android:text="Назад" />
 </RelativeLayout>

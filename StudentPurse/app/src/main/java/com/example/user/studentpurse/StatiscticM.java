@@ -1,8 +1,11 @@
 package com.example.user.studentpurse;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
@@ -16,11 +19,16 @@ import java.util.ArrayList;
 
 public class StatiscticM extends AppCompatActivity {
 
+    Button back;
+
     PieChart pieChart;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statisctic_m);
+        getSupportActionBar().setTitle("Statisctic");
+
+        back = (Button) findViewById(R.id.bc3);
 
         pieChart = (PieChart) findViewById(R.id.piechart);
 
@@ -61,5 +69,15 @@ public class StatiscticM extends AppCompatActivity {
         data.setValueTextColor(Color.YELLOW);
 
         pieChart.setData(data);
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(StatiscticM.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
     }
 }

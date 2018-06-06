@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -42,6 +43,7 @@ public class Minus extends AppCompatActivity{
     ImageButton AddCategory;
     ImageButton AddSubCategory;
     Button ok;
+    Button back;
     EditText etText;
     SharedPreferences sPref;
 
@@ -63,12 +65,12 @@ public class Minus extends AppCompatActivity{
 
 
 
-
     SmallPurseParameters parameters;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_minus);
+        getSupportActionBar().setTitle("Minus");
 
         categoryService = new CategoriesService(Minus.this);
         balanceService = new BalanceService(Minus.this);
@@ -222,6 +224,15 @@ public class Minus extends AppCompatActivity{
             }
         });
 
+        back.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Minus.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
     }
 
     private AlertDialog.Builder getModalInstanse(String header, String title){
@@ -253,6 +264,7 @@ public class Minus extends AppCompatActivity{
 
     private void InitializeComponents(){
         ok = (Button) findViewById(R.id.okm);
+        back = (Button) findViewById(R.id.bcm);
         etText = (EditText)findViewById(R.id.tv4);
         Moneys = (Spinner)findViewById(R.id.moneys);
         Date = (EditText)findViewById(R.id.date);

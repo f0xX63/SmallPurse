@@ -19,7 +19,7 @@ public class FirstOpenApp {
     };
     private static Spending[] Spending = new Spending[]{};
     private static Balance[] Balances = new Balance[]{
-            new Balance(100,"Налиичные")
+            new Balance(100,"Наличные")
     };
 
     public static Boolean checkExcistsFiles(String[] fileNames)

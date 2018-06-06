@@ -27,6 +27,7 @@ public class Plus extends AppCompatActivity {
     Spinner Moneys;
     EditText Date;
     Button ok;
+    Button back;
     EditText etText;
     IBalanceService balanceService;
     List<String> storages = new ArrayList<String>();
@@ -35,6 +36,8 @@ public class Plus extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plus);
+        getSupportActionBar().setTitle("Plus");
+
         balanceService = new BalanceService(Plus.this);
         try {
             parameters = JSONHelper.importFromJSON(Plus.this);
@@ -66,7 +69,12 @@ public class Plus extends AppCompatActivity {
                     value = Double.parseDouble(etText.getText().toString());
                 }catch (Exception e)
                 {
-                    Toast.makeText(Plus.this, "Поле сумма не заполнено иди неверный формат суммы", Toast.LENGTH_LONG);
+                    Toast.makeText(Plus.this, "Поле сумма не заполнено или неверный формат суммы", Toast.LENGTH_LONG);
+                    return;
+                }
+                if (etText.getText().toString().isEmpty() || etText.getText() == null)
+                {
+                    Toast.makeText(Plus.this, "Не все поля заполнены",Toast.LENGTH_LONG).show();
                     return;
                 }
                 Balance balance = new Balance(value, Moneys.getSelectedItem().toString());
@@ -80,6 +88,16 @@ public class Plus extends AppCompatActivity {
                 finish();
             }
         });
+
+       back.setOnClickListener(new View.OnClickListener(){
+           @Override
+           public void onClick(View v) {
+               Intent intent = new Intent(Plus.this, MainActivity.class);
+               startActivity(intent);
+
+               finish();
+           }
+       });
     }
 
 
@@ -89,6 +107,7 @@ public class Plus extends AppCompatActivity {
     }
 
     private void InitializeComponents(){
+        back = (Button) findViewById(R.id.bc);
         ok = (Button) findViewById(R.id.okp);
         Moneys = (Spinner)findViewById(R.id.moneys);
         Date = (EditText)findViewById(R.id.date);
